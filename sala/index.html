@@ -18,7 +18,8 @@ button,input{font:inherit;color:inherit}
 [hidden]{display:none!important}
 
 /* ---------- Entrada ---------- */
-.entrada{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 20px}
+.entrada{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:28px 20px}
+.arriba{display:block;height:80px;width:auto;max-width:90%;animation:entra .7s cubic-bezier(.2,.9,.3,1) both}
 .tarjeta{width:100%;max-width:440px;background:var(--blanco);border-radius:24px;padding:26px 24px 24px;display:flex;flex-direction:column;gap:16px;animation:entra .7s cubic-bezier(.2,.9,.3,1) both}
 .marca{display:flex;justify-content:center;padding-bottom:18px;border-bottom:1.5px solid var(--linea)}
 .marca img{height:72px;width:auto;max-width:100%;display:block}
@@ -42,8 +43,8 @@ input:focus{border-color:var(--tinta)}
 /* ---------- Sala ---------- */
 .barra{position:sticky;top:0;z-index:5;background:var(--negro);color:var(--blanco);border-bottom:1px solid #262626}
 .barra-in{max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px}
-.barra .logo{background:var(--blanco);border-radius:10px;padding:6px 10px;display:flex}
-.barra .logo img{height:30px;width:auto;display:block}
+.barra .logo{display:flex}
+.barra .logo img{height:40px;width:auto;display:block}
 .barra .nom{flex:1;min-width:0}
 .barra .nom b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .barra .nom span{font-size:12px;color:#A8A8A8}
@@ -110,7 +111,7 @@ input:focus{border-color:var(--tinta)}
 }
 @media (max-width:520px){
   .barra-in{gap:10px;padding:10px 14px}
-  .barra .logo img{height:24px}
+  .barra .logo img{height:32px}
   .barra .nom b{display:none}
   .barra .nom span{display:block;color:var(--blanco);font-size:14px;font-weight:600}
   .prog .txt{display:none}
@@ -125,8 +126,8 @@ input:focus{border-color:var(--tinta)}
 
 <!-- Entrada -->
 <section class="entrada" id="entrada" hidden>
+  <img class="arriba" src="../img/ableton-para-la-educacion-blanco.png" alt="Ableton para la educación">
   <main class="tarjeta">
-    <div class="marca"><img src="../img/ableton-para-la-educacion.png" alt="Ableton para la educación"></div>
     <div class="eti">Curso gratis</div>
     <h1 id="e-titulo">Tu primera canción en <em>Live 13</em></h1>
     <p>Seis clases cortas para hacer una canción de principio a fin con lo nuevo de Live 13. Escribe tu nombre como quieres que aparezca en tu constancia.</p>
@@ -145,7 +146,7 @@ input:focus{border-color:var(--tinta)}
 <div id="sala" hidden>
   <header class="barra">
     <div class="barra-in">
-      <div class="logo"><img src="../img/ableton-para-la-educacion.png" alt="Ableton para la educación"></div>
+      <div class="logo"><img src="../img/ableton-para-la-educacion-blanco.png" alt="Ableton para la educación"></div>
       <div class="nom"><b id="s-titulo"></b><span id="s-hola"></span></div>
       <div class="prog"><span class="txt" id="p-txt">0 de 6</span><div class="pista"><i id="p-bar"></i></div></div>
       <button class="salir" id="salir" type="button">Salir</button>

@@ -13,7 +13,8 @@
 :root{--negro:#111111;--tinta:#1A1A1A;--gris:#5C5C5C;--linea:#E4E4E4;--blanco:#FFFFFF}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;min-height:100vh;background:var(--negro);color:var(--tinta);font-family:'Poppins',system-ui,sans-serif;-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;padding:24px 20px}
+body{margin:0;min-height:100vh;background:var(--negro);color:var(--tinta);font-family:'Poppins',system-ui,sans-serif;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:28px 20px}
+.arriba{display:block;height:80px;width:auto;max-width:90%;animation:entra .7s cubic-bezier(.2,.9,.3,1) both}
 .tarjeta{width:100%;max-width:440px;background:var(--blanco);border-radius:24px;padding:26px 24px 24px;display:flex;flex-direction:column;gap:18px;animation:entra .7s cubic-bezier(.2,.9,.3,1) both,brillo 3.2s ease-in-out .7s infinite}
 .marca{display:flex;justify-content:center;padding-bottom:18px;border-bottom:1.5px solid var(--linea)}
 .marca img{height:72px;width:auto;max-width:100%;display:block}
@@ -38,8 +39,8 @@ p{margin:0;font-size:16px;line-height:1.55}
 </style>
 </head>
 <body>
+<img class="arriba" src="img/ableton-para-la-educacion-blanco.png" alt="Ableton para la educación">
 <main class="tarjeta">
-  <div class="marca"><img src="img/ableton-para-la-educacion.png" alt="Ableton para la educación"></div>
   <div class="pronto"><span class="punto"></span>Muy pronto</div>
   <h1>Aquí habrá un <em>regalo</em> para ti</h1>
   <p>Si adquiriste tu licencia de Ableton Live conmigo, pronto vas a encontrar en esta página algo preparado especialmente para ti.</p>
