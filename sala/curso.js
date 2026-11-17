@@ -7,7 +7,7 @@ window.CURSO = {
   autor: "Ernesto Malaca",
 
   // URL de la aplicación web de Apps Script que guarda los registros (vacío = no se envía).
-  registro: "",
+  registro: "https://script.google.com/macros/s/AKfycbzAV3Ubipmf6SLvuOmJmq4mzdgfJJcA69dB5C1tIZY0PY8MoCyVLvx4IjMF3G8v65U/exec",
 
   clases: [
     {
