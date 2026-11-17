@@ -63,6 +63,10 @@ window.CURSO = {
   // Descarga de la canción del curso (vacío = "Muy pronto").
   cancion: { titulo: "Descarga la canción del curso", url: "" },
 
-  // Examen opcional. Se desbloquea al marcar todas las clases como vistas.
-  examen: { titulo: "Examen para tu certificado", url: "" }
+  // Constancia en PDF. Se desbloquea al marcar todas las clases como vistas
+  // y la envía el Apps Script (necesita `registro`).
+  constancia: { titulo: "Recibe tu constancia" },
+
+  // Examen opcional (vacío = no aparece).
+  examen: { titulo: "Examen opcional", url: "" }
 };

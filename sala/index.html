@@ -241,14 +241,19 @@ input:focus{border-color:var(--tinta)}
         '<span class="t"><span>' + esc(c.titulo) + '</span><small>' + esc(c.duracion) + (c.video ? '' : ' · Muy pronto') + '</small></span></button></li>';
     }).join('');
     var todo = vistas() === clases.length;
+    var enviada = !!estado.constancia;
     var extras = [
       { t: C.cancion.titulo, s: C.cancion.url ? 'Proyecto y stems' : 'Muy pronto', url: C.cancion.url, bloq: !C.cancion.url, ic: '↓' },
-      { t: C.examen.titulo, s: !todo ? 'Se desbloquea al terminar las clases' : (C.examen.url ? 'Opcional' : 'Muy pronto'), url: C.examen.url, bloq: !todo || !C.examen.url, ic: '★' }
+      { t: C.constancia.titulo, accion: 'constancia', ic: enviada ? '✓' : '★',
+        s: !todo ? 'Se desbloquea al terminar las clases' : (!C.registro ? 'Muy pronto' : (enviada ? 'Enviada a ' + estado.correo : 'Te llega en PDF a tu correo')),
+        bloq: !todo || !C.registro || enviada }
     ];
+    if (C.examen.url) extras.push({ t: C.examen.titulo, s: todo ? 'Opcional' : 'Se desbloquea al terminar las clases', url: C.examen.url, bloq: !todo, ic: '?' });
     $('l-extra').innerHTML = extras.map(function(x){
-      var inner = '<span class="n">' + (x.bloq ? lock : x.ic) + '</span><span class="t"><span>' + esc(x.t) + '</span><small>' + esc(x.s) + '</small></span>';
-      return x.bloq ? '<li><div class="item bloq">' + inner + '</div></li>'
-                    : '<li><a class="item" href="' + esc(x.url) + '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">' + inner + '</a></li>';
+      var inner = '<span class="n">' + (x.bloq && !(x.accion && enviada) ? lock : x.ic) + '</span><span class="t"><span>' + esc(x.t) + '</span><small>' + esc(x.s) + '</small></span>';
+      if (x.bloq) return '<li><div class="item bloq"' + (x.accion && enviada ? ' style="opacity:1"' : '') + '>' + inner + '</div></li>';
+      if (x.accion) return '<li><button class="item" type="button" data-accion="' + x.accion + '">' + inner + '</button></li>';
+      return '<li><a class="item" href="' + esc(x.url) + '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">' + inner + '</a></li>';
     }).join('');
     var n = vistas();
     $('p-txt').textContent = n + ' de ' + clases.length;
@@ -278,6 +283,16 @@ input:focus{border-color:var(--tinta)}
 
   $('l-clases').addEventListener('click', function(ev){
     var b = ev.target.closest('button[data-i]'); if (b) mostrar(+b.dataset.i);
+  });
+  $('l-extra').addEventListener('click', function(ev){
+    var b = ev.target.closest('button[data-accion="constancia"]'); if (!b || !C.registro) return;
+    var ok = window.confirm('Te enviaremos tu constancia a ' + estado.correo + ' con el nombre:\n\n' + estado.nombre + '\n\n¿Está bien escrito?');
+    if (!ok) return;
+    try {
+      fetch(C.registro, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({ tipo:'constancia', nombre:estado.nombre, correo:estado.correo }) });
+    } catch(e){}
+    estado.constancia = new Date().toISOString(); guardar(); pintarLista();
   });
   $('b-vista').addEventListener('click', function(){
     var c = clases[actual];
