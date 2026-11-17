@@ -19,7 +19,9 @@ button,input{font:inherit;color:inherit}
 
 /* ---------- Entrada ---------- */
 .entrada{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;padding:28px 20px}
-.arriba{display:block;height:80px;width:auto;max-width:90%;animation:entra .7s cubic-bezier(.2,.9,.3,1) both}
+.arriba{display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff;animation:entra .7s cubic-bezier(.2,.9,.3,1) both}
+.arriba b{font-size:26px;font-weight:700;letter-spacing:-.4px;line-height:1}
+.arriba img{height:22px;width:auto;display:block}
 .tarjeta{width:100%;max-width:440px;background:var(--blanco);border-radius:24px;padding:26px 24px 24px;display:flex;flex-direction:column;gap:16px;animation:entra .7s cubic-bezier(.2,.9,.3,1) both}
 .marca{display:flex;justify-content:center;padding-bottom:18px;border-bottom:1.5px solid var(--linea)}
 .marca img{height:72px;width:auto;max-width:100%;display:block}
@@ -99,7 +101,7 @@ input:focus{border-color:var(--tinta)}
 
 .pie{max-width:1240px;margin:0 auto;padding:0 20px 40px;display:flex;justify-content:center}
 .pie .firma{border:0;color:#9A9A9A}
-.pie .firma img{filter:invert(1)}
+
 
 @keyframes entra{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes pulso{0%{transform:scale(1);opacity:1}70%,100%{transform:scale(2.6);opacity:0}}
@@ -126,7 +128,7 @@ input:focus{border-color:var(--tinta)}
 
 <!-- Entrada -->
 <section class="entrada" id="entrada" hidden>
-  <img class="arriba" src="../img/ableton-para-la-educacion-blanco.png" alt="Ableton para la educación">
+  <div class="arriba"><b>Ernesto Malaca</b><img src="../img/ableton-certified-trainer-blanco.svg" alt="Ableton Certified Trainer"></div>
   <main class="tarjeta">
     <div class="eti">Curso gratis</div>
     <h1 id="e-titulo">Tu primera canción en <em>Live 13</em></h1>
@@ -138,7 +140,6 @@ input:focus{border-color:var(--tinta)}
       <button class="btn" type="submit">Entrar a la sala</button>
       <div class="nota">Usamos tu correo para enviarte tu constancia y avisarte cuando se publiquen clases nuevas.</div>
     </form>
-    <div class="firma"><span>Ernesto Malaca</span><img src="../img/ableton-certified-trainer.svg" alt="Ableton Certified Trainer"></div>
   </main>
 </section>
 
@@ -175,7 +176,7 @@ input:focus{border-color:var(--tinta)}
     </aside>
   </div>
 
-  <footer class="pie"><div class="firma"><span>Ernesto Malaca</span><img src="../img/ableton-certified-trainer.svg" alt="Ableton Certified Trainer"></div></footer>
+  <footer class="pie"><div class="firma"><span>Ernesto Malaca</span><img src="../img/ableton-certified-trainer-blanco.svg" alt="Ableton Certified Trainer"></div></footer>
 </div>
 
 <script src="curso.js"></script>
