@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tu regalo llega pronto</title>
+<title>Tu curso gratis se abre hoy</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#111111">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,6 +33,17 @@ p{margin:0;font-size:16px;line-height:1.55}
 .secreto svg{flex:none;margin-top:1px}
 .firma{display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:16px;border-top:1.5px solid var(--linea);font-size:13px;color:var(--gris);text-align:center}
 .firma img{height:16px;width:auto;display:block}
+.reloj{display:flex;flex-direction:column;align-items:center;gap:12px;border-radius:18px;background:#F2F2F2;padding:20px 16px 18px}
+.cifras{display:flex;align-items:flex-start;gap:8px}
+.cifra{display:flex;flex-direction:column;align-items:center;min-width:74px}
+.cifra b{font-size:44px;font-weight:800;letter-spacing:-1.5px;line-height:1;font-variant-numeric:tabular-nums}
+.cifra small{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gris);margin-top:6px}
+.dos{font-size:38px;font-weight:800;line-height:1;color:#BDBDBD}
+.hora{font-size:13px;color:var(--gris);text-align:center;line-height:1.45}
+.hora b{color:var(--tinta)}
+.btn{display:block;text-align:center;text-decoration:none;border-radius:999px;background:var(--tinta);color:var(--blanco);font-weight:700;font-size:17px;padding:15px 22px;transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+[hidden]{display:none!important}
 @keyframes entra{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
 @keyframes brillo{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.28)}50%{box-shadow:0 0 44px 4px rgba(255,255,255,.28)}}
 @keyframes pulso{0%{transform:scale(1);opacity:1}70%,100%{transform:scale(2.6);opacity:0}}
@@ -43,16 +54,53 @@ p{margin:0;font-size:16px;line-height:1.55}
 <body>
 <div class="arriba"><b>Ernesto Malaca</b><img src="img/ableton-certified-trainer-blanco.svg" alt="Ableton Certified Trainer"></div>
 <main class="tarjeta">
-  <div class="pronto"><span class="punto"></span>Muy pronto</div>
-  <h1>Aquí habrá un <em>regalo</em> para ti</h1>
-  <p>Si adquiriste tu licencia de Ableton Live conmigo, pronto vas a encontrar en esta página algo preparado especialmente para ti.</p>
-  <div class="regalo" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 13h18"/><path d="M12 9v12"/><path d="M12 9c-2 0-4-1-4-3s3-2 4 3c1-5 4-5 4-3s-2 3-4 3z"/></svg>
+  <div class="pronto"><span class="punto"></span><span id="estado">Hoy a las 10:00 p.m.</span></div>
+  <h1 id="titulo">Tu curso gratis se abre <em>hoy</em></h1>
+  <p id="texto">Si adquiriste tu licencia de Ableton Live conmigo, esta noche se libera aquí <b>Tu primera canción en Live 13</b>: seis clases cortas para hacer una canción de principio a fin.</p>
+  <div class="reloj" id="reloj">
+    <div class="cifras" role="timer" aria-live="off">
+      <div class="cifra"><b id="h">--</b><small>Horas</small></div><span class="dos">:</span>
+      <div class="cifra"><b id="m">--</b><small>Minutos</small></div><span class="dos">:</span>
+      <div class="cifra"><b id="s">--</b><small>Segundos</small></div>
+    </div>
+    <div class="hora">10:00 p.m. hora de la Ciudad de México<span id="local"></span></div>
   </div>
+  <a class="btn" id="entrar" href="sala/" hidden>Entrar al curso →</a>
   <div class="secreto">
     <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
     <span>Esta página es secreta. Guárdala y no la compartas con nadie.</span>
   </div>
 </main>
+<script>
+(function(){
+  var ABRE = new Date('2026-11-17T22:00:00-06:00');
+  var $ = function(id){ return document.getElementById(id); };
+  function dos(n){ return (n < 10 ? '0' : '') + n; }
+  try {
+    var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (tz && tz !== 'America/Mexico_City') {
+      var t = ABRE.toLocaleTimeString('es-MX', { hour: 'numeric', minute: '2-digit', hour12: true });
+      $('local').innerHTML = '<br>En tu hora: <b>' + t + '</b>';
+    }
+  } catch(e){}
+  function abrir(){
+    $('reloj').hidden = true; $('entrar').hidden = false;
+    $('estado').textContent = 'Ya está abierto';
+    $('titulo').innerHTML = 'Tu <em>regalo</em> ya está aquí';
+    $('texto').innerHTML = 'Entra con tu nombre y tu correo, y empieza <b>Tu primera canción en Live 13</b>.';
+    document.title = 'Tu curso gratis ya está abierto';
+  }
+  function tic(){
+    var r = ABRE - Date.now();
+    if (r <= 0) { abrir(); return; }
+    var seg = Math.floor(r / 1000);
+    $('h').textContent = dos(Math.floor(seg / 3600));
+    $('m').textContent = dos(Math.floor(seg % 3600 / 60));
+    $('s').textContent = dos(seg % 60);
+    setTimeout(tic, 1000 - (r % 1000) + 5);
+  }
+  tic();
+})();
+</script>
 </body>
 </html>
