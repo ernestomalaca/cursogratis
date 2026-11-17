@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sala de clases · Tu primera canción en Live 13</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#111111">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,800&display=swap">
+<style>
+:root{--negro:#111;--tinta:#1A1A1A;--gris:#5C5C5C;--gris2:#8A8A8A;--linea:#E4E4E4;--suave:#F2F2F2;--blanco:#fff}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--negro);color:var(--tinta);font-family:'Poppins',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+[hidden]{display:none!important}
+
+/* ---------- Entrada ---------- */
+.entrada{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 20px}
+.tarjeta{width:100%;max-width:440px;background:var(--blanco);border-radius:24px;padding:26px 24px 24px;display:flex;flex-direction:column;gap:16px;animation:entra .7s cubic-bezier(.2,.9,.3,1) both}
+.marca{display:flex;justify-content:center;padding-bottom:18px;border-bottom:1.5px solid var(--linea)}
+.marca img{height:72px;width:auto;max-width:100%;display:block}
+.eti{font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase}
+h1{margin:0;font-size:32px;font-weight:800;line-height:1.05;letter-spacing:-1px}
+h1 em{font-style:italic}
+.tarjeta p{margin:0;font-size:15px;line-height:1.55;color:var(--gris)}
+form{display:flex;flex-direction:column;gap:12px}
+label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600}
+input{border:1.5px solid var(--linea);border-radius:12px;padding:12px 14px;font-size:16px;background:var(--blanco);outline:none;transition:border-color .15s}
+input:focus{border-color:var(--tinta)}
+.btn{appearance:none;border:0;border-radius:999px;background:var(--tinta);color:var(--blanco);font-weight:700;font-size:16px;padding:14px 22px;cursor:pointer;transition:transform .15s,opacity .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.35;cursor:default;transform:none}
+.btn.claro{background:var(--suave);color:var(--tinta)}
+.nota{font-size:12px;color:var(--gris2);line-height:1.45}
+.error{font-size:13px;font-weight:600;color:var(--tinta)}
+.firma{display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:16px;border-top:1.5px solid var(--linea);font-size:13px;color:var(--gris);text-align:center}
+.firma img{height:16px;width:auto;display:block}
+
+/* ---------- Sala ---------- */
+.barra{position:sticky;top:0;z-index:5;background:var(--negro);color:var(--blanco);border-bottom:1px solid #262626}
+.barra-in{max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:18px}
+.barra .logo{background:var(--blanco);border-radius:10px;padding:6px 10px;display:flex}
+.barra .logo img{height:30px;width:auto;display:block}
+.barra .nom{flex:1;min-width:0}
+.barra .nom b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.barra .nom span{font-size:12px;color:#A8A8A8}
+.prog{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;color:#CFCFCF}
+.prog .pista{width:150px;height:6px;border-radius:9px;background:#333;overflow:hidden}
+.prog .pista i{display:block;height:100%;width:0;background:var(--blanco);border-radius:9px;transition:width .5s cubic-bezier(.2,.9,.3,1)}
+.salir{appearance:none;background:none;border:1px solid #444;color:#CFCFCF;border-radius:999px;padding:6px 12px;font-size:12px;cursor:pointer}
+
+.sala{max-width:1240px;margin:0 auto;padding:22px 20px 60px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;align-items:start}
+.panel{background:var(--blanco);border-radius:22px;overflow:hidden}
+.video{position:relative;aspect-ratio:16/9;background:#0B0B0B;display:flex;align-items:center;justify-content:center}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pronto{display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--blanco);text-align:center;padding:20px}
+.pronto .punto{position:relative;width:12px;height:12px}
+.pronto .punto::before,.pronto .punto::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--blanco)}
+.pronto .punto::before{animation:pulso 1.8s ease-out infinite}
+.pronto b{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.pronto span{font-size:13px;color:#A8A8A8;max-width:320px}
+.info{padding:22px 24px 24px;display:flex;flex-direction:column;gap:14px}
+.info .meta{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.chip{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;background:var(--suave);border-radius:999px;padding:5px 11px}
+.chip.ok{background:var(--tinta);color:var(--blanco)}
+.info h2{margin:0;font-size:28px;font-weight:800;letter-spacing:-.6px;line-height:1.1}
+.info p{margin:0;font-size:16px;line-height:1.6;color:#333}
+.logras{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--tinta);border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.45}
+.logras b{display:block;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.acciones{display:flex;gap:10px;flex-wrap:wrap;padding-top:4px}
+
+.lista{position:sticky;top:78px;max-height:calc(100vh - 100px);overflow:auto}
+.lista .cab{padding:18px 20px 12px;border-bottom:1.5px solid var(--linea)}
+.lista .cab b{display:block;font-size:16px}
+.lista .cab span{font-size:13px;color:var(--gris)}
+.lista ol{list-style:none;margin:0;padding:8px}
+.item{width:100%;appearance:none;background:none;border:0;border-radius:14px;padding:12px;display:flex;gap:12px;align-items:center;text-align:left;cursor:pointer;transition:background .15s}
+.item:hover{background:var(--suave)}
+.item[aria-current="true"]{background:var(--tinta);color:var(--blanco)}
+.item[aria-current="true"] small{color:#BDBDBD}
+.item .n{flex:none;width:32px;height:32px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.item.vista .n{background:currentColor}
+.item.vista .n svg{display:block}
+.item .n svg{display:none;width:16px;height:16px}
+.item.vista .n em{display:none}
+.item .n em{font-style:normal}
+.item:not([aria-current="true"]).vista .n svg{stroke:var(--blanco)}
+.item[aria-current="true"].vista .n svg{stroke:var(--tinta)}
+.item .t{flex:1;min-width:0}
+.item .t span{display:block;font-size:14px;font-weight:600;line-height:1.3}
+.item .t small{font-size:12px;color:var(--gris)}
+.item.bloq{opacity:.45;cursor:default}
+.item.bloq:hover{background:none}
+.sep{margin:6px 12px;border-top:1.5px solid var(--linea)}
+
+.pie{max-width:1240px;margin:0 auto;padding:0 20px 40px;display:flex;justify-content:center}
+.pie .firma{border:0;color:#9A9A9A}
+.pie .firma img{filter:invert(1)}
+
+@keyframes entra{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes pulso{0%{transform:scale(1);opacity:1}70%,100%{transform:scale(2.6);opacity:0}}
+@media (max-width:900px){
+  .sala{grid-template-columns:1fr}
+  .lista{position:static;max-height:none}
+  .prog .pista{width:90px}
+  .barra .nom span{display:none}
+}
+@media (max-width:520px){
+  .barra-in{gap:10px;padding:10px 14px}
+  .barra .logo img{height:24px}
+  .barra .nom b{display:none}
+  .barra .nom span{display:block;color:var(--blanco);font-size:14px;font-weight:600}
+  .prog .txt{display:none}
+  .sala{padding:14px 12px 40px;gap:14px}
+  .info{padding:18px}
+  .info h2{font-size:23px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- Entrada -->
+<section class="entrada" id="entrada" hidden>
+  <main class="tarjeta">
+    <div class="marca"><img src="../img/ableton-para-la-educacion.png" alt="Ableton para la educación"></div>
+    <div class="eti">Curso gratis</div>
+    <h1 id="e-titulo">Tu primera canción en <em>Live 13</em></h1>
+    <p>Seis clases cortas para hacer una canción de principio a fin con lo nuevo de Live 13. Escribe tu nombre como quieres que aparezca en tu constancia.</p>
+    <form id="form" novalidate>
+      <label>Nombre completo<input id="f-nombre" name="nombre" autocomplete="name" required maxlength="80"></label>
+      <label>Correo<input id="f-correo" name="correo" type="email" autocomplete="email" required maxlength="120"></label>
+      <div class="error" id="f-error" hidden></div>
+      <button class="btn" type="submit">Entrar a la sala</button>
+      <div class="nota">Usamos tu correo para enviarte tu constancia y avisarte cuando se publiquen clases nuevas.</div>
+    </form>
+    <div class="firma"><span>Ernesto Malaca</span><img src="../img/ableton-certified-trainer.svg" alt="Ableton Certified Trainer"></div>
+  </main>
+</section>
+
+<!-- Sala -->
+<div id="sala" hidden>
+  <header class="barra">
+    <div class="barra-in">
+      <div class="logo"><img src="../img/ableton-para-la-educacion.png" alt="Ableton para la educación"></div>
+      <div class="nom"><b id="s-titulo"></b><span id="s-hola"></span></div>
+      <div class="prog"><span class="txt" id="p-txt">0 de 6</span><div class="pista"><i id="p-bar"></i></div></div>
+      <button class="salir" id="salir" type="button">Salir</button>
+    </div>
+  </header>
+
+  <div class="sala">
+    <article class="panel">
+      <div class="video" id="v"></div>
+      <div class="info">
+        <div class="meta"><span class="chip" id="c-num"></span><span class="chip" id="c-dur"></span><span class="chip ok" id="c-ok" hidden>Vista</span></div>
+        <h2 id="c-titulo"></h2>
+        <p id="c-desc"></p>
+        <div class="logras" id="c-logras-box"><div><b>Al terminar</b><span id="c-logras"></span></div></div>
+        <div class="acciones">
+          <button class="btn" id="b-vista" type="button">Marcar como vista</button>
+          <button class="btn claro" id="b-sig" type="button">Siguiente clase →</button>
+        </div>
+      </div>
+    </article>
+
+    <aside class="panel lista">
+      <div class="cab"><b>Clases</b><span id="l-total"></span></div>
+      <ol id="l-clases"></ol>
+      <div class="sep"></div>
+      <ol id="l-extra"></ol>
+    </aside>
+  </div>
+
+  <footer class="pie"><div class="firma"><span>Ernesto Malaca</span><img src="../img/ableton-certified-trainer.svg" alt="Ableton Certified Trainer"></div></footer>
+</div>
+
+<script src="curso.js"></script>
+<script>
+(function(){
+  var C = window.CURSO, clases = C.clases;
+  var LLAVE = 'cursogratis-live13';
+  var check = '<svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  var lock = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:block;width:15px;height:15px"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+  var $ = function(id){ return document.getElementById(id); };
+
+  function leer(){ try { return JSON.parse(localStorage.getItem(LLAVE)) || null; } catch(e){ return null; } }
+  function guardar(){ try { localStorage.setItem(LLAVE, JSON.stringify(estado)); } catch(e){} }
+  var estado = leer();
+  var actual = 0;
+
+  function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function vistas(){ return clases.filter(function(c){ return estado.vistas[c.id]; }).length; }
+  function primerNombre(n){ var p = n.trim().split(/\s+/)[0] || ''; return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase(); }
+
+  /* ---------- Entrada ---------- */
+  $('form').addEventListener('submit', function(ev){
+    ev.preventDefault();
+    var nombre = $('f-nombre').value.trim().replace(/\s+/g,' ');
+    var correo = $('f-correo').value.trim().toLowerCase();
+    var err = $('f-error');
+    if (nombre.length < 3) { err.textContent = 'Escribe tu nombre completo.'; err.hidden = false; return; }
+    if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(correo)) { err.textContent = 'Revisa que tu correo esté bien escrito.'; err.hidden = false; return; }
+    err.hidden = true;
+    estado = { nombre: nombre, correo: correo, vistas: {}, desde: new Date().toISOString() };
+    guardar();
+    if (C.registro) {
+      try {
+        fetch(C.registro, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'},
+          body: JSON.stringify({ tipo:'registro', nombre:nombre, correo:correo }) });
+      } catch(e){}
+    }
+    abrirSala();
+  });
+
+  $('salir').addEventListener('click', function(){
+    try { localStorage.removeItem(LLAVE); } catch(e){}
+    estado = null;
+    $('sala').hidden = true; $('entrada').hidden = false;
+    window.scrollTo(0,0);
+  });
+
+  /* ---------- Sala ---------- */
+  function abrirSala(){
+    $('entrada').hidden = true; $('sala').hidden = false;
+    $('s-titulo').textContent = C.titulo;
+    $('s-hola').textContent = 'Hola, ' + primerNombre(estado.nombre);
+    $('l-total').textContent = clases.length + ' clases · cerca de una hora';
+    var sig = clases.findIndex(function(c){ return !estado.vistas[c.id]; });
+    mostrar(sig < 0 ? 0 : sig, true);
+  }
+
+  function pintarLista(){
+    $('l-clases').innerHTML = clases.map(function(c, i){
+      var cls = 'item' + (estado.vistas[c.id] ? ' vista' : '');
+      return '<li><button class="' + cls + '" data-i="' + i + '" aria-current="' + (i === actual) + '">' +
+        '<span class="n"><em>' + (i+1) + '</em>' + check + '</span>' +
+        '<span class="t"><span>' + esc(c.titulo) + '</span><small>' + esc(c.duracion) + (c.video ? '' : ' · Muy pronto') + '</small></span></button></li>';
+    }).join('');
+    var todo = vistas() === clases.length;
+    var extras = [
+      { t: C.cancion.titulo, s: C.cancion.url ? 'Proyecto y stems' : 'Muy pronto', url: C.cancion.url, bloq: !C.cancion.url, ic: '↓' },
+      { t: C.examen.titulo, s: !todo ? 'Se desbloquea al terminar las clases' : (C.examen.url ? 'Opcional' : 'Muy pronto'), url: C.examen.url, bloq: !todo || !C.examen.url, ic: '★' }
+    ];
+    $('l-extra').innerHTML = extras.map(function(x){
+      var inner = '<span class="n">' + (x.bloq ? lock : x.ic) + '</span><span class="t"><span>' + esc(x.t) + '</span><small>' + esc(x.s) + '</small></span>';
+      return x.bloq ? '<li><div class="item bloq">' + inner + '</div></li>'
+                    : '<li><a class="item" href="' + esc(x.url) + '" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">' + inner + '</a></li>';
+    }).join('');
+    var n = vistas();
+    $('p-txt').textContent = n + ' de ' + clases.length;
+    $('p-bar').style.width = (n / clases.length * 100) + '%';
+  }
+
+  function mostrar(i, inicial){
+    actual = i;
+    var c = clases[i];
+    $('v').innerHTML = c.video
+      ? '<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(c.video) + '?rel=0&modestbranding=1" title="' + esc(c.titulo) + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+      : '<div class="pronto"><span class="punto"></span><b>Muy pronto</b><span>Esta clase se está grabando. Te avisamos por correo en cuanto se publique.</span></div>';
+    $('c-num').textContent = 'Clase ' + (i+1) + ' de ' + clases.length;
+    $('c-dur').textContent = c.duracion;
+    $('c-titulo').textContent = c.titulo;
+    $('c-desc').textContent = c.descripcion;
+    $('c-logras').textContent = c.logras;
+    $('c-logras-box').hidden = !c.logras;
+    var v = !!estado.vistas[c.id];
+    $('c-ok').hidden = !v;
+    $('b-vista').textContent = v ? 'Marcar como no vista' : 'Marcar como vista';
+    $('b-vista').disabled = !c.video && !v;
+    $('b-sig').hidden = i === clases.length - 1;
+    pintarLista();
+    if (!inicial && window.innerWidth <= 900) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  $('l-clases').addEventListener('click', function(ev){
+    var b = ev.target.closest('button[data-i]'); if (b) mostrar(+b.dataset.i);
+  });
+  $('b-vista').addEventListener('click', function(){
+    var c = clases[actual];
+    if (estado.vistas[c.id]) delete estado.vistas[c.id]; else estado.vistas[c.id] = new Date().toISOString();
+    guardar(); mostrar(actual, true);
+  });
+  $('b-sig').addEventListener('click', function(){ if (actual < clases.length - 1) mostrar(actual + 1); });
+
+  if (estado && estado.correo) abrirSala(); else $('entrada').hidden = false;
+})();
+</script>
+</body>
+</html>
