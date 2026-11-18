@@ -75,6 +75,22 @@ input:focus{border-color:var(--tinta)}
 .logras b{display:block;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
 .acciones{display:flex;gap:10px;flex-wrap:wrap;padding-top:4px}
 
+.quiz{border-top:1.5px solid var(--linea);padding:22px 24px 24px;display:flex;flex-direction:column;gap:14px}
+.quiz .q-cab{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gris)}
+.quiz h3{margin:0;font-size:21px;font-weight:700;line-height:1.3;letter-spacing:-.3px}
+.ops{display:flex;flex-direction:column;gap:8px}
+.op{appearance:none;text-align:left;background:var(--blanco);border:1.5px solid var(--linea);border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.4;cursor:pointer;transition:border-color .15s,background .15s}
+.op:hover:not(:disabled){border-color:var(--tinta)}
+.op:disabled{cursor:default}
+.op.bien{border-color:var(--tinta);background:var(--tinta);color:var(--blanco)}
+.op.mal{border-color:var(--tinta);background:var(--suave);text-decoration:line-through;color:var(--gris)}
+.porque{font-size:14px;line-height:1.5;background:var(--suave);border-radius:12px;padding:12px 14px}
+.porque b{display:block;margin-bottom:2px}
+.saltar{appearance:none;background:none;border:0;padding:6px 0;font-size:13px;font-weight:600;color:var(--gris);text-decoration:underline;cursor:pointer;align-self:flex-start}
+.resultado{font-size:28px;font-weight:800;letter-spacing:-.5px}
+.bloqueo{color:var(--blanco);text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px}
+.bloqueo b{font-size:20px;font-weight:800}
+.bloqueo span{font-size:13px;color:#A8A8A8}
 .lista{position:sticky;top:78px;max-height:calc(100vh - 100px);overflow:auto}
 .lista .cab{padding:18px 20px 12px;border-bottom:1.5px solid var(--linea)}
 .lista .cab b{display:block;font-size:16px}
@@ -166,6 +182,7 @@ input:focus{border-color:var(--tinta)}
           <button class="btn claro" id="b-sig" type="button">Siguiente clase →</button>
         </div>
       </div>
+      <section class="quiz" id="quiz" hidden aria-live="polite"></section>
     </article>
 
     <aside class="panel lista">
@@ -234,12 +251,18 @@ input:focus{border-color:var(--tinta)}
     mostrar(sig < 0 ? 0 : sig, true);
   }
 
+  function disponible(c){ return !c.abre || Date.now() >= new Date(c.abre).getTime(); }
+  function fechaAbre(c){
+    try { return new Date(c.abre).toLocaleString('es-MX', { weekday:'long', day:'numeric', month:'long', hour:'numeric', minute:'2-digit' }); }
+    catch(e){ return c.abre; }
+  }
+
   function pintarLista(){
     $('l-clases').innerHTML = clases.map(function(c, i){
       var cls = 'item' + (estado.vistas[c.id] ? ' vista' : '');
       return '<li><button class="' + cls + '" data-i="' + i + '" aria-current="' + (i === actual) + '">' +
         '<span class="n"><em>' + (i+1) + '</em>' + check + '</span>' +
-        '<span class="t"><span>' + esc(c.titulo) + '</span><small>' + esc(c.duracion) + (c.video ? '' : ' · Muy pronto') + '</small></span></button></li>';
+        '<span class="t"><span>' + esc(c.titulo) + '</span><small>' + esc(c.duracion) + (!disponible(c) ? ' · Se libera pronto' : (c.video ? '' : ' · Muy pronto')) + '</small></span></button></li>';
     }).join('');
     var todo = vistas() === clases.length;
     var enviada = !!estado.constancia;
@@ -264,7 +287,11 @@ input:focus{border-color:var(--tinta)}
   function mostrar(i, inicial){
     actual = i;
     var c = clases[i];
-    $('v').innerHTML = c.video
+    var libre = disponible(c);
+    $('quiz').hidden = true;
+    $('v').innerHTML = !libre
+      ? '<div class="bloqueo">' + lock.replace('width:15px;height:15px','width:28px;height:28px') + '<b>Se libera pronto</b><span>Esta clase se abre el ' + esc(fechaAbre(c)) + ' (hora de la Ciudad de México).</span></div>'
+      : c.video
       ? '<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(c.video) + '?rel=0&modestbranding=1" title="' + esc(c.titulo) + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
       : '<div class="pronto"><span class="punto"></span><b>Muy pronto</b><span>Esta clase se está grabando. Te avisamos por correo en cuanto se publique.</span></div>';
     $('c-num').textContent = 'Clase ' + (i+1) + ' de ' + clases.length;
@@ -275,8 +302,8 @@ input:focus{border-color:var(--tinta)}
     $('c-logras-box').hidden = !c.logras;
     var v = !!estado.vistas[c.id];
     $('c-ok').hidden = !v;
-    $('b-vista').textContent = v ? 'Marcar como no vista' : 'Marcar como vista';
-    $('b-vista').disabled = !c.video && !v;
+    $('b-vista').textContent = v ? 'Marcar como no vista' : (c.preguntas && c.preguntas.length ? 'Terminé la clase →' : 'Marcar como vista');
+    $('b-vista').disabled = (!c.video || !libre) && !v;
     $('b-sig').hidden = i === clases.length - 1;
     pintarLista();
     if (!inicial && window.innerWidth <= 900) window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -297,8 +324,66 @@ input:focus{border-color:var(--tinta)}
   });
   $('b-vista').addEventListener('click', function(){
     var c = clases[actual];
-    if (estado.vistas[c.id]) delete estado.vistas[c.id]; else estado.vistas[c.id] = new Date().toISOString();
+    if (estado.vistas[c.id]) { delete estado.vistas[c.id]; guardar(); mostrar(actual, true); return; }
+    if (c.preguntas && c.preguntas.length) { abrirQuiz(c); return; }
+    estado.vistas[c.id] = new Date().toISOString();
     guardar(); mostrar(actual, true);
+  });
+
+  /* ---------- Preguntas después de cada clase ---------- */
+  var qi = 0, aciertos = 0;
+  function terminarClase(c){
+    estado.vistas[c.id] = estado.vistas[c.id] || new Date().toISOString();
+    guardar();
+  }
+  function abrirQuiz(c){
+    qi = 0; aciertos = 0;
+    $('quiz').hidden = false;
+    pintarPregunta(c);
+    $('quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function pintarPregunta(c){
+    var p = c.preguntas[qi];
+    $('quiz').innerHTML =
+      '<div class="q-cab"><span>¿Prestaste atención?</span><span>' + (qi + 1) + ' de ' + c.preguntas.length + '</span></div>' +
+      '<h3>' + esc(p.q) + '</h3>' +
+      '<div class="ops">' + p.opciones.map(function(o, k){ return '<button class="op" type="button" data-k="' + k + '">' + esc(o) + '</button>'; }).join('') + '</div>' +
+      '<div id="q-pie"></div>' +
+      '<button class="saltar" type="button" data-q="saltar">Entendí, no quiero responder las preguntas esta vez</button>';
+  }
+  function siguienteTexto(){ return actual < clases.length - 1 ? 'Siguiente clase →' : 'Volver a las clases'; }
+  $('quiz').addEventListener('click', function(ev){
+    var c = clases[actual];
+    var op = ev.target.closest('button.op');
+    if (op && !op.disabled) {
+      var p = c.preguntas[qi], k = +op.dataset.k, bien = k === p.correcta;
+      if (bien) aciertos++;
+      $('quiz').querySelectorAll('.op').forEach(function(b, j){
+        b.disabled = true;
+        if (j === p.correcta) b.classList.add('bien'); else if (j === k) b.classList.add('mal');
+      });
+      var ultima = qi === c.preguntas.length - 1;
+      $('q-pie').innerHTML = '<div class="porque"><b>' + (bien ? '¡Exacto!' : 'Casi.') + '</b>' + esc(p.porque || '') + '</div>' +
+        '<div class="acciones" style="margin-top:12px"><button class="btn" type="button" data-q="' + (ultima ? 'fin' : 'otra') + '">' + (ultima ? 'Ver resultado' : 'Siguiente pregunta') + '</button></div>';
+      return;
+    }
+    var b = ev.target.closest('button[data-q]'); if (!b) return;
+    var q = b.dataset.q;
+    if (q === 'otra') { qi++; pintarPregunta(c); return; }
+    if (q === 'fin') {
+      terminarClase(c);
+      estado.quiz = estado.quiz || {}; estado.quiz[c.id] = aciertos + '/' + c.preguntas.length; guardar();
+      $('quiz').innerHTML = '<div class="q-cab"><span>Resultado</span></div>' +
+        '<div class="resultado">' + aciertos + ' de ' + c.preguntas.length + '</div>' +
+        '<p style="margin:0">' + (aciertos === c.preguntas.length ? '¡Perfecto! Te quedó todo claro.' : 'Puedes volver a ver la clase cuando quieras para repasar.') + '</p>' +
+        '<div class="acciones"><button class="btn" type="button" data-q="seguir">' + siguienteTexto() + '</button></div>';
+      pintarLista(); $('c-ok').hidden = false; $('b-vista').textContent = 'Marcar como no vista';
+      return;
+    }
+    if (q === 'saltar') { terminarClase(c); }
+    if (q === 'saltar' || q === 'seguir') {
+      if (actual < clases.length - 1) mostrar(actual + 1); else mostrar(actual, true);
+    }
   });
   $('b-sig').addEventListener('click', function(){ if (actual < clases.length - 1) mostrar(actual + 1); });
 
