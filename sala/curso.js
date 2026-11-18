@@ -19,7 +19,7 @@ window.CURSO = {
       id: "c1",
       titulo: "Qué cambia y cómo moverte",
       duracion: "9 min",
-      video: "",
+      video: "m2u5JE9OmcI",
       descripcion: "Abrimos Live 13 y te enseño el nuevo modo de cargar cosas: dispositivos y presets desde la propia cadena y desde el mezclador, sin pelearte con el navegador.",
       logras: "Tu proyecto listo y tu flujo para cargar sonidos más rápido.",
       abre: "",
