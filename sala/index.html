@@ -409,7 +409,12 @@ input:focus{border-color:var(--tinta)}
   });
   $('b-sig').addEventListener('click', function(){ if (actual < clases.length - 1) mostrar(actual + 1); });
 
-  if (estado) abrirSala(); else $('entrada').hidden = false;
+  if (estado && estado.correo) abrirSala();
+  else {
+    // Sin registro: cada visita vuelve a mostrar la entrada (con su avance guardado).
+    if (estado && Object.keys(estado.vistas || {}).length) $('b-entrar').textContent = 'Continuar';
+    $('entrada').hidden = false;
+  }
 })();
 </script>
 </body>
