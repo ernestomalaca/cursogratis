@@ -34,7 +34,7 @@ window.CURSO = {
     },
     {
       id: "c2",
-      titulo: "El beat",
+      titulo: "El secuenciador",
       duracion: "10 min",
       video: "",
       descripcion: "Armamos el ritmo de la canción con el nuevo Step Sequencer, con ajustes por fila y por paso, y diseñamos los sonidos del kit con Drum Synth.",
