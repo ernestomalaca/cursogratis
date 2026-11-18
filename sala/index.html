@@ -39,6 +39,9 @@ input:focus{border-color:var(--tinta)}
 .btn.claro{background:var(--suave);color:var(--tinta)}
 .nota{font-size:12px;color:var(--gris2);line-height:1.45}
 .error{font-size:13px;font-weight:600;color:var(--tinta)}
+.registro{border-top:1.5px solid var(--linea);padding-top:20px;display:flex;flex-direction:column;gap:12px}
+.registro .eti small{font-weight:600;letter-spacing:0;text-transform:none;color:var(--gris2);margin-left:6px}
+.registro p{font-size:14px;line-height:1.5;margin:0}
 .firma{display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:16px;border-top:1.5px solid var(--linea);font-size:13px;color:var(--gris);text-align:center}
 .firma img{height:16px;width:auto;display:block}
 
@@ -148,13 +151,16 @@ input:focus{border-color:var(--tinta)}
   <main class="tarjeta">
     <div class="eti">Curso gratis</div>
     <h1 id="e-titulo">Tu primera canción en <em>Live 13</em></h1>
-    <p>Seis clases cortas para hacer una canción de principio a fin con lo nuevo de Live 13. Escribe tu nombre como quieres que aparezca en tu constancia.</p>
-    <form id="form" novalidate>
-      <label>Nombre completo<input id="f-nombre" name="nombre" autocomplete="name" required maxlength="80"></label>
-      <label>Correo<input id="f-correo" name="correo" type="email" autocomplete="email" required maxlength="120"></label>
+    <p>Seis clases cortas para hacer una canción de principio a fin con lo nuevo de Live 13. </p>
+    <button class="btn" type="button" id="b-entrar">Entrar al curso</button>
+    <form id="form" class="registro" novalidate>
+      <div class="eti">Regístrate<small>Opcional</small></div>
+      <p>Usa el correo con el que pediste tu descuento. La página recordará tu avance, recibirás un reconocimiento personalizado por el curso y te llegará un aviso cada vez que suba contenido gratis.</p>
+      <label>Nombre completo <span class="nota">(así aparecerá en tu reconocimiento)</span><input id="f-nombre" name="nombre" autocomplete="name" maxlength="80"></label>
+      <label>Correo<input id="f-correo" name="correo" type="email" autocomplete="email" maxlength="120"></label>
       <div class="error" id="f-error" hidden></div>
-      <button class="btn" type="submit">Entrar a la sala</button>
-      <div class="nota">Usamos tu correo para enviarte tu constancia y avisarte cuando se publiquen clases nuevas.</div>
+      <button class="btn claro" type="submit" id="b-registrar">Registrarme y entrar</button>
+      <div class="nota">Puedes entrar sin registrarte y hacerlo después desde la sala.</div>
     </form>
   </main>
 </section>
@@ -223,7 +229,8 @@ input:focus{border-color:var(--tinta)}
     if (nombre.length < 3) { err.textContent = 'Escribe tu nombre completo.'; err.hidden = false; return; }
     if (!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(correo)) { err.textContent = 'Revisa que tu correo esté bien escrito.'; err.hidden = false; return; }
     err.hidden = true;
-    estado = { nombre: nombre, correo: correo, vistas: {}, desde: new Date().toISOString() };
+    var prev = estado || {};
+    estado = { nombre: nombre, correo: correo, vistas: prev.vistas || {}, desde: prev.desde || new Date().toISOString() };
     guardar();
     if (C.registro) {
       try {
@@ -234,10 +241,23 @@ input:focus{border-color:var(--tinta)}
     abrirSala();
   });
 
+  $('b-entrar').addEventListener('click', function(){
+    if (!estado) { estado = { nombre: '', correo: '', vistas: {}, desde: new Date().toISOString() }; guardar(); }
+    abrirSala();
+  });
+
+  function pedirRegistro(){
+    $('sala').hidden = true; $('entrada').hidden = false;
+    $('b-entrar').textContent = 'Volver al curso';
+    window.scrollTo(0,0);
+  }
+
   $('salir').addEventListener('click', function(){
+    if (!estado.correo) { pedirRegistro(); return; }
     try { localStorage.removeItem(LLAVE); } catch(e){}
     estado = null;
     $('sala').hidden = true; $('entrada').hidden = false;
+    $('b-entrar').textContent = 'Entrar al curso';
     window.scrollTo(0,0);
   });
 
@@ -245,7 +265,8 @@ input:focus{border-color:var(--tinta)}
   function abrirSala(){
     $('entrada').hidden = true; $('sala').hidden = false;
     $('s-titulo').textContent = C.titulo;
-    $('s-hola').textContent = 'Hola, ' + primerNombre(estado.nombre);
+    $('s-hola').textContent = estado.nombre ? 'Hola, ' + primerNombre(estado.nombre) : 'Sin registro';
+    $('salir').textContent = estado.correo ? 'Salir' : 'Registrarme';
     $('l-total').textContent = clases.length + ' clases · cerca de una hora';
     var sig = clases.findIndex(function(c){ return !estado.vistas[c.id]; });
     mostrar(sig < 0 ? 0 : sig, true);
@@ -269,7 +290,7 @@ input:focus{border-color:var(--tinta)}
     var extras = [
       { t: C.cancion.titulo, s: C.cancion.url ? 'Proyecto y stems' : 'Muy pronto', url: C.cancion.url, bloq: !C.cancion.url, ic: '↓' },
       { t: C.constancia.titulo, accion: 'constancia', ic: enviada ? '✓' : '★',
-        s: !todo ? 'Se desbloquea al terminar las clases' : (!C.registro ? 'Muy pronto' : (enviada ? 'Enviada a ' + estado.correo : 'Te llega en PDF a tu correo')),
+        s: !todo ? 'Se desbloquea al terminar las clases' : (!C.registro ? 'Muy pronto' : (enviada ? 'Enviada a ' + estado.correo : (estado.correo ? 'Te llega en PDF a tu correo' : 'Regístrate para recibirla en tu correo'))),
         bloq: !todo || !C.registro || enviada }
     ];
     if (C.examen.url) extras.push({ t: C.examen.titulo, s: todo ? 'Opcional' : 'Se desbloquea al terminar las clases', url: C.examen.url, bloq: !todo, ic: '?' });
@@ -293,7 +314,7 @@ input:focus{border-color:var(--tinta)}
       ? '<div class="bloqueo">' + lock.replace('width:15px;height:15px','width:28px;height:28px') + '<b>Se libera pronto</b><span>Esta clase se abre el ' + esc(fechaAbre(c)) + ' (hora de la Ciudad de México).</span></div>'
       : c.video
       ? '<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(c.video) + '?rel=0&modestbranding=1" title="' + esc(c.titulo) + '" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
-      : '<div class="pronto"><span class="punto"></span><b>Muy pronto</b><span>Esta clase se está grabando. Te avisamos por correo en cuanto se publique.</span></div>';
+      : '<div class="pronto"><span class="punto"></span><b>Muy pronto</b><span>Esta clase se está grabando. ' + (estado.correo ? 'Te avisamos por correo en cuanto se publique.' : 'Regístrate y te avisamos por correo en cuanto se publique.') + '</span></div>';
     $('c-num').textContent = 'Clase ' + (i+1) + ' de ' + clases.length;
     $('c-dur').textContent = c.duracion;
     $('c-titulo').textContent = c.titulo;
@@ -314,6 +335,7 @@ input:focus{border-color:var(--tinta)}
   });
   $('l-extra').addEventListener('click', function(ev){
     var b = ev.target.closest('button[data-accion="constancia"]'); if (!b || !C.registro) return;
+    if (!estado.correo) { pedirRegistro(); return; }
     var ok = window.confirm('Te enviaremos tu constancia a ' + estado.correo + ' con el nombre:\n\n' + estado.nombre + '\n\n¿Está bien escrito?');
     if (!ok) return;
     try {
@@ -387,7 +409,7 @@ input:focus{border-color:var(--tinta)}
   });
   $('b-sig').addEventListener('click', function(){ if (actual < clases.length - 1) mostrar(actual + 1); });
 
-  if (estado && estado.correo) abrirSala(); else $('entrada').hidden = false;
+  if (estado) abrirSala(); else $('entrada').hidden = false;
 })();
 </script>
 </body>
